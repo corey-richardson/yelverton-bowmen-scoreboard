@@ -29,6 +29,14 @@
         - [index-template](#index-template)
         - [add-score-template](#add-score-template)
         - [results-template](#results-template)
+    - [stylecss](#stylecss)
+        - [variables](#variables)
+        - [global-styling](#global-styling)
+        - [navigation-bar](#navigation-bar)
+        - [footer](#footer)
+        - [text](#text)
+        - [links](#links)
+        - [tables](#tables)
 
 ---
 
@@ -480,4 +488,157 @@ Display the scores for each person in the top scores list, by category and overa
 
 
 {% endblock %}
+```
+
+### style.css
+
+#### Variables
+
+Set colour variables corresponding to Yelverton Bowmen HEX Codes.
+
+```css
+:root {
+    --yb_blue: #0080FE;
+    --yb_yellow: #FFFC00;
+    --yb_light_blue: #E0E8FF;
+    --yb_dark_blue: #002447;
+}
+```
+
+#### Global Styling
+
+- Sets the font to "Lucida Grande or Lucida Sans Unicode.
+- Sets the padding to no padding.
+- Centre aligns all text. 
+> The `font-family` property can hold several font names as a "fallback" system. If the browser does not support the first font, it tries the next font.
+
+```css
+* {
+    font-family: "Lucida Grande", "Lucida Sans Unicode";
+    padding: 0;
+    text-align: center;
+}
+```
+
+#### Navigation Bar
+
+- Set the background colour of the navigation bar to `--yb_blue` / `#0080FE`.
+- Set elements to vertically align themselves centrally in their boxes.
+- Set text colour to white.
+- Set vertical padding to 10 pixels; horizontal padding remains as none.
+- `h1` and `h2` elements has a 5 pixel margin on all sides.
+- `img` elements have a height and width of 70 pixels.
+
+```css
+nav {
+    background-color: var(--yb_blue);
+    vertical-align: middle;
+    color: white;
+    padding: 10px 0;
+
+}
+
+nav h1, h2 {
+    margin: 5px;
+}
+
+nav img {
+    height: 70px;
+    width: 70px;
+    margin: 0;
+}
+```
+
+#### Footer
+
+- Set the background colour of the navigation bar to `--yb_blue` / `#0080FE`.
+- Sets text colour to `--yb_light_blue` / `#E0E8FF`
+- Sets `a` elements (links) to have a colour of  `--yb_light_blue` / `#E0E8FF` with a 15 pixel margin.
+```css
+footer {
+    background-color: var(--yb_blue);
+    color: var(--yb_light_blue);
+}
+
+footer a {
+    color: var(--yb_light_blue);
+    border-radius: 15px;
+}
+```
+
+#### Text
+
+- `h1` header elements have a vertical padding of 30 pixels and no horizontal padding.
+- `h1` header elements have a font size of 40 pixels.
+- `p` paragraph elements have a vertical padding of 10 pixels and no horizontal padding.
+- `b` bold elements have a text colour of `--yb_blue` / `#0080FE`.
+```css
+h1 {
+    padding: 30px 0;
+    font-size: 40px;
+}
+
+p {
+    padding: 10px 0;
+}
+
+b {
+    color: var(--yb_blue);
+}
+```
+
+#### Links
+
+- `a` elements have a text colour of white.
+- `a` elements have a border with radius 15 pixels.
+- The area within this border is `--yb_blue` / `#0080FE` in colour.
+- `a` elements have 10 pixels of horizontal padding; they have no vertical padding.
+- when hovered over, the text of `a` elements changes to `--yb_blue` / `#0080FE` and the border changes to `--yb_dark_blue` / `#002447`
+
+```css
+a {
+    color: white;
+    border-radius: 15px;
+    background-color: var(--yb_blue);
+    padding: 0 10px;
+}
+
+a:hover {
+    color: var(--yb_blue);
+    background-color: var(--yb_dark_blue);
+}
+```
+
+#### Tables
+
+- Table headers `th` are bold.
+- `table`, `th`, `td` and `tr` elements have a 1 pixel wide solid black border.
+- The `border-collapse` property sets whether table borders should collapse into a single border or be separated as in standard HTML.
+- The `table` is given a width of 100% of the page.
+- Table header `th` and table data `td` elements are given a width of 20% of the page.
+- Every even-th indexed row is given a light grey colour to help with user readability.
+
+```css
+th {
+    font-weight: bold;
+}
+
+table, th, td, tr {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+
+table {
+    width: 100%;
+
+}
+
+th, td {
+    width: 20%;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
 ```
