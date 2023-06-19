@@ -535,7 +535,6 @@ nav {
     vertical-align: middle;
     color: white;
     padding: 10px 0;
-
 }
 
 nav h1, h2 {
@@ -630,12 +629,10 @@ table, th, td, tr {
 
 table {
     width: 100%;
-
 }
 
 th, td {
-    width: 20%;
-    text-align: center;
+    width: 25%;
 }
 
 tr:nth-child(even) {

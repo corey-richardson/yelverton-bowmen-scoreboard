@@ -7,13 +7,11 @@
 
 * {
     font-family: "Lucida Grande", "Lucida Sans Unicode";
-    padding: 0;
     text-align: center;
 }
 
 nav {
     background-color: var(--yb_blue);
-    text-align: center;
     vertical-align: middle;
     color: white;
     padding: 10px 0;
@@ -27,7 +25,6 @@ nav h1, h2 {
 nav img {
     height: 70px;
     width: 70px;
-    margin: 0;
 }
 
 footer {
@@ -76,12 +73,11 @@ table, th, td, tr {
 
 table {
     width: 100%;
-
 }
 
-/* th, td {
-    width: 20%;
-} */
+th, td {
+    width: 25%;
+}
 
 tr:nth-child(even) {
     background-color: #f2f2f2;
