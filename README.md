@@ -2,6 +2,36 @@
 
 ---
 
+## Contents
+
+- [user-manual](#user-manual)
+    - [running-the-flask-project](#running-the-flask-project)
+    - [setting-up](#setting-up)
+    - [add-a-score](#add-a-score)
+    - [scoreboard](#scoreboard)
+    - [final-results](#final-results)
+    - [clearing-the-scores](#clearing-the-scores)
+    - [close-web-app](#close-web-app)
+- [installation-guide](#installation-guide)
+- [software-description](#software-description)
+    - [app](#app)
+        - [imports](#imports)
+        - [define-constants](#define-constants)
+        - [flask-initialisation](#flask-initialisation)
+        - [event-initialisation](#event-initialisation)
+        - [webbrowser](#webbrowser)
+        - [index-route-scoreboard](#index-route-scoreboard)
+        - [add-score-route](#add-score-route)
+        - [results-route-and-grouper-function](#results-route-and-grouper-function)
+    - [forms](#forms)
+    - [templates](#templates)
+        - [base-template](#base-template)
+        - [index-template](#index-template)
+        - [add-score-template](#add-score-template)
+        - [results-template](#results-template)
+
+---
+
 Intended for use at community events, such as the annual Plympton Lamb Feast.
 
 ---
@@ -13,9 +43,21 @@ Intended for use at community events, such as the annual Plympton Lamb Feast.
 ```
 cd yb_score_display
 ```
+
+*Windows:*
+```
+Scripts\activate
+flask run
+```
+*Linux:*
 ```
 source bin/activate
 flask run
+```
+
+If you want to run in "debug" mode, allowing code changes whilst the app is running:
+```
+flask run --debug
 ```
 
 ### Setting Up
@@ -81,10 +123,361 @@ name,score,age_category,sex,email,phone_num
 ```
 > NOTE: The empty new-line after the headers is REQUIRED.
 
+### Close Web App
+
+To close the web app, type `deactivate` into the terminal window.
+```
+(plympton_lamb_feast) @corey-richardson ➜ /workspaces/yelverton-bowmen-scoreboard/yb_score_display (main) $ deactivate
+@corey-richardson ➜ /workspaces/yelverton-bowmen-scoreboard/yb_score_display (main) $ 
+``` 
+
 ---
 
 ## Installation Guide
 
+- Install VS Code, or equivalent code editor / IDE.
+- Install Python (3.11), including PIP.
+- Use PIP to install dependencies.
+```
+pip install flask
+pip install flask_wtf
+pip install pandas
+pip install webbrowser
+```
+
 ---
 
 ## Software Description
+
+### App
+
+#### Imports
+
+```py
+# Flask Imports
+from flask import Flask, render_template, redirect, url_for
+from forms import GetScoreData
+# Pandas - dataframe management
+import pandas as pd
+# Datetime - used to get todays date
+from datetime import date
+# Auto-open web browser to page
+import webbrowser
+# Used to check for 'nan' values
+import math
+```
+
+#### Define Constants
+
+```py
+PATH = "static/scores.csv"
+# How many names to display:
+N_WINNERS = 5
+```
+
+#### Flask Initialisation
+
+```py
+# Flask setup
+app = Flask(__name__)
+app.config['SECRET_KEY'] = 'mysecret'
+```
+
+#### Event Initialisation
+
+Set event name and current date. These are passed into the navigation bar in the template `base.html`.
+
+```py
+event = "Plympton Lamb Feast"
+# Get date, format into DD/MM/YYYY
+today = date.today().strftime("%d/%m/%Y")
+
+@app.context_processor
+def set_event():
+    return dict(event_name=event, date=today)
+```
+
+#### Webbrowser
+
+```py
+# Open the flask app in a web browser
+# Home IP, Port 5000
+webbrowser.open("http://127.0.0.1:5000/")
+```
+
+#### Index Route / Scoreboard
+
+When the index route is opened or redirected to, use the `Pandas` module to read the current score data into a DataFrame object named `score_data`. Sort these values by score from highest to lowest.
+
+Get the number of entries and the average score; these summary statistics are displayed at the bottom of the page.
+
+If `score_data` is empty, `.mean()` will return a 'not a number' object - resolve this by setting the average score to 0 if this is the case.
+
+Convert `score_data` to a list and pass it to the template `index.html`.
+
+```py
+@app.route('/', methods=["GET","POST"])
+def index():
+    score_data = pd.read_csv(PATH)
+    score_data = score_data.sort_values(by=["score"], ascending=False)
+    
+    count = score_data.shape[0]
+    avg_score = score_data.score.mean()
+    if math.isnan(avg_score): avg_score = 0
+    
+    score_data = score_data.values.tolist()
+    
+    return render_template(
+        "index.html", 
+        score_data=score_data,
+        count=count,
+        avg_score=avg_score
+    )
+```
+
+#### Add Score Route
+
+Create an instance of the form class `GetScoreData`. If the form has not been submitted, render the `add_score.html` template. This template gets user input as specified by `forms.py`. More information regarding the form can be found [here](#forms).
+
+Once the form is validated, write each input to `scores.csv` and redirect back to the index route / scoreboard.
+
+```py
+@app.route('/add_score', methods=["GET","POST"])
+def add_score():
+    get_score_data = GetScoreData()
+    if get_score_data.validate_on_submit():
+        name = get_score_data.name.data
+        score = get_score_data.score.data
+        age_category = get_score_data.age_category.data
+        sex = get_score_data.sex.data
+        email = get_score_data.email.data
+        phone_num = get_score_data.phone_num.data
+        
+        with open(PATH, "a") as score_file:
+            line = f"{name},{score},{age_category},{sex},{email},{phone_num}\n"
+            score_file.write(line)
+            
+        return redirect(url_for(
+            "index", _external=True, scheme="https"
+        ))
+        
+    return render_template(
+        "add_score.html", get_score_data=get_score_data
+    )
+```
+
+#### Results Route and Grouper Function
+
+The `grouper` function takes in a grouped-by DataFrame and converts the top `N_WINNERS` values to a list. If the DataFrame is empty or does not contain enough values, it will return an empty but valid list.
+
+The results route reads and sorts the `scores.csv` file into a DataFrame. It then gets the overall top scores and using the `grouper` function gets the top scores for categorys Junior, Senior, Gents and Ladies. These get passed into the `results.html` template.
+
+```py
+def grouper(grouped_data, name):
+    try:
+        lst = grouped_data.get_group(name).head(N_WINNERS).values.tolist()
+    except KeyError:
+        lst = [["",""]]
+        print(f"{name} list empty.")
+    return lst
+
+@app.route('/results', methods=["GET","POST"])
+def results():
+    score_data = pd.read_csv(PATH)
+    score_data = score_data.sort_values(by=["score"], ascending=False)
+    
+    overalls = score_data[["name","score"]].head(N_WINNERS).values.tolist()
+    if len(overalls) == 0: overalls = [["",""]] # If data empty
+    
+    age_grouped = score_data.groupby(score_data.age_category)
+    seniors = grouper(age_grouped, "Senior")
+    juniors = grouper(age_grouped, "Junior")
+        
+    sex_grouped = score_data.groupby(score_data.sex)
+    gents = grouper(sex_grouped, "Gents")
+    ladies = grouper(sex_grouped, "Ladies")
+    
+    return render_template(
+        "results.html",
+        overalls=overalls,
+        seniors=seniors,
+        juniors=juniors,
+        gents=gents,
+        ladies=ladies
+    )
+```
+
+### Forms
+
+```py
+from flask_wtf import FlaskForm
+from wtforms import SubmitField, StringField, SelectField, EmailField, IntegerField, TelField
+from wtforms.validators import DataRequired
+# validators.required(), validators.length(max=10)]
+
+class GetScoreData(FlaskForm):
+# Name, Score, Age Category, Email, Phone Number
+    name = StringField("Name: ", validators=[DataRequired()])
+    score = IntegerField("Score: ", validators=[DataRequired()])
+    age_category = SelectField("Age Category: ", choices=["Senior", "Junior"])
+    sex = SelectField("Gender: ", choices=["Gents", "Ladies", "Prefer not to say", "Other"])
+    email = EmailField("Email: ")
+    phone_num = StringField("Phone Number: ")
+    
+    submit = SubmitField("Submit")
+```
+
+### Templates
+
+#### Base Template
+
+Contains the navigation bar and footer featured on each page. All other templates extend from `base.html`.
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <link rel="stylesheet" href="../static/style.css">
+    
+    <title>Yelverton Bowmen of Plymouth</title>
+    <link rel="icon" type="image/png" href="../static/imgs/logo.png"/>
+  </head>
+
+  <body>
+    <nav>
+        <img src="../static/imgs/logo.png" />
+        <h2>{{ event_name }} - {{ date }}</h2>
+        <a href="/">Scoreboard</a>
+        <a href="/add_score">Add a Score</a>
+        <a href="/results">View Results</a>
+    </nav>
+
+    <div id="main">
+    {% block content %}
+    {% endblock %}
+    </div>
+
+    <footer>
+        <p>
+            <a href="https://yelvertonbowmen.co.uk" target="_blank">&copy Yelverton Bowmen</a>
+            <br> <a href="https://github.com/corey-richardson" target="_blank">github.com/corey-richardon</a>
+        </p>
+    </footer>
+
+  </body>
+</html>
+```
+
+#### Index Template
+
+Create a table with columns Ranking, Name, Score and Age. For each row in the `score_data` list previously passed in by the index route, add a row to the table with the respective values. The Ranking column is populated by the loop index plus 1 (zero-indexed): `loop.index0 + 1`.
+
+Also, display the number of entries and the average score achieved.
+
+```html
+{% extends "base.html" %}
+{% block content %}
+<br>
+<table>
+    <tr>
+        <tr>
+            <th>Ranking</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Age</th>
+        </tr>
+    </tr>
+    <tbody>
+        {% for row in score_data %}
+        <tr>
+            <td>{{loop.index0 + 1}}</td>
+            <td>{{row[0]}}</td>
+            <td>{{row[1]}}</td>
+            <td>{{row[2]}}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<p><b>{{ count }}</b> scores recorded with an average of <b>{{ avg_score | round (2) }}</b> points.</p>
+{% endblock %}
+```
+
+#### Add Score Template
+
+```html
+{% extends "base.html" %}
+{% block content %}
+
+<form method="post">
+
+    {{ get_score_data.hidden_tag() }}
+
+    <h2> {{ get_score_data.name.label }} </h2>
+    {{ get_score_data.name() }}
+    <h2> {{ get_score_data.score.label }} </h2>
+    {{ get_score_data.score() }}
+    <h2> {{ get_score_data.age_category.label }} </h2>
+    {{ get_score_data.age_category() }}
+    <h2> {{ get_score_data.sex.label }} </h2>
+    {{ get_score_data.sex() }}
+    <h2> {{ get_score_data.email.label }} </h2>
+    {{ get_score_data.email() }}
+    <h2> {{ get_score_data.phone_num.label }} </h2>
+    {{ get_score_data.phone_num() }}
+
+    <br><br>
+    {{ get_score_data.submit() }}
+
+</form>
+
+{% endblock %}
+```
+
+#### Results Template
+
+Display the scores for each person in the top scores list, by category and overall scores.
+
+```html
+{% extends "base.html" %}
+{% block content %}
+<br>
+
+<h2>Overall Highest Scores</h2>
+<ol>
+    {% for person in overalls %}
+        <li><b>{{loop.index0 + 1}}.</b> {{ person[0] }} - {{ person[1] }}</li>
+    {% endfor %}
+</ol>
+
+<h2>Senior Highest Scores</h2>
+<ol>
+    {% for person in seniors %}
+        <li><b>{{loop.index0 + 1}}.</b> {{ person[0] }} - {{ person[1] }}</li>
+    {% endfor %}
+</ol>
+
+<h2>Junior Highest Scores</h2>
+<ol>
+    {% for person in juniors %}
+        <li><b>{{loop.index0 + 1}}.</b> {{ person[0] }} - {{ person[1] }}</li>
+    {% endfor %}
+</ol>
+
+<h2>Gents Highest Scores</h2>
+<ol>
+    {% for person in gents %}
+        <li><b>{{loop.index0 + 1}}.</b> {{ person[0] }} - {{ person[1] }}</li>
+    {% endfor %}
+</ol>
+
+<h2>Ladies Highest Scores</h2>
+<ol>
+    {% for person in ladies %}
+        <li><b>{{loop.index0 + 1}}.</b> {{ person[0] }} - {{ person[1] }}</li>
+    {% endfor %}
+</ol>
+
+
+{% endblock %}
+```
