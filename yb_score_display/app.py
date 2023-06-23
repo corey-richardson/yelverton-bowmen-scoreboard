@@ -11,14 +11,13 @@ import webbrowser
 import math
 
 PATH = "static/scores.csv"
-# How many names to display:
-N_WINNERS = 5
 
 # Flask setup
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'mysecret'
 
 event = "Plympton Lamb Feast"
+
 # Get date, format into DD/MM/YYYY
 today = date.today().strftime("%d/%m/%Y")
 
@@ -80,6 +79,9 @@ def add_score():
     return render_template(
         "add_score.html", get_score_data=get_score_data
     )
+
+# How many names to display:
+N_WINNERS = 5
 
 # Helper function that gets the top 3 scores in the grouped data and returns
 # them as a list in the format [["Name", score], ]
