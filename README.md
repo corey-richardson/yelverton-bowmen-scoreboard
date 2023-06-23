@@ -141,10 +141,11 @@ To close the web app, type `deactivate` into the terminal window.
 
 ---
 
-## Installation Guide
+## Installation Guide to Run Locally
 
 - Install VS Code, or equivalent code editor / IDE.
-- Install Python (3.11), including PIP.
+- Install Python (3.11.X), including PIP.
+- Download zip file from GitHub, or if Git is installed, clone the repository.
 - Use PIP to install dependencies.
 ```
 pip install flask
