@@ -13,8 +13,8 @@
   
   <!-- Form for submitting scores -->
   <form id="scoreForm">
-    <label for="playerName">Player Name:</label>
-    <input type="text" id="playerName" required>
+    <label for="name">Name:</label>
+    <input type="text" id="name" required>
     <label for="score">Score:</label>
     <input type="number" id="score" required>
     <button type="submit">Submit</button>
@@ -36,7 +36,7 @@
     request.onupgradeneeded = function(event) {
       db = event.target.result;
       var objectStore = db.createObjectStore("scores", { keyPath: "id", autoIncrement: true });
-      objectStore.createIndex("playerName", "playerName", { unique: false });
+      objectStore.createIndex("name", "name", { unique: false });
       objectStore.createIndex("score", "score", { unique: false });
     };
 
@@ -49,10 +49,10 @@
     };
 
     // Function to add a new score
-    function addScore(playerName, score) {
+    function addScore(name, score) {
       var transaction = db.transaction(["scores"], "readwrite");
       var objectStore = transaction.objectStore("scores");
-      var request = objectStore.add({ playerName: playerName, score: score });
+      var request = objectStore.add({ name: name, score: score });
 
       request.onsuccess = function(event) {
         console.log("Score added successfully");
@@ -75,7 +75,7 @@
         var cursor = event.target.result;
         if (cursor) {
           var listItem = document.createElement('li');
-          listItem.textContent = cursor.value.playerName + ': ' + cursor.value.score;
+          listItem.textContent = cursor.value.name + ': ' + cursor.value.score;
           scoreboard.appendChild(listItem);
           cursor.continue();
         }
@@ -85,10 +85,10 @@
     // Submit score form
     document.getElementById('scoreForm').addEventListener('submit', function(event) {
       event.preventDefault();
-      var playerName = document.getElementById('playerName').value;
+      var name = document.getElementById('name').value;
       var score = parseInt(document.getElementById('score').value);
-      addScore(playerName, score);
-      document.getElementById('playerName').value = '';
+      addScore(name, score);
+      document.getElementById('name').value = '';
       document.getElementById('score').value = '';
     });
   </script>
