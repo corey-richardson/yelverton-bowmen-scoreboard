@@ -12,12 +12,12 @@ $(document).ready(function ()
     {
         setTimeout(function() {
             $("#" + flashId).addClass("flash");
-        }, 400);
+        }, 500);
 
         setTimeout(function() {
             $("#" + flashId).removeClass("flash");
-        }, 1600);
-        
+        }, 3000);
+
         // sessionStorage.removeItem("flashId");
     }
 

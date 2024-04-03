@@ -74,7 +74,7 @@ input, select, button {
 }
 
 .flash {
-    background-color: var(--yb_blue);
+    background-color: var(--yb_blue) !important; /* Important tag overides nth rule */
 }
 
 #gallery-image {
