@@ -5,6 +5,8 @@ imageArray = [
     "res/gallery/IMG_3.jpg",
     "res/gallery/IMG_4.jpg",
     "res/gallery/IMG_5.jpg",
+    "res/gallery/IMG_6.jpg",
+    "res/gallery/IMG_7.jpg",
 ]
 
 imageCaptions = [
@@ -14,6 +16,8 @@ imageCaptions = [
     "Warming up before the Autumn Gold Competition",
     "Autumn Gold 2023",
     "Frostbite - December 2023",
+    "St. George's Day Shoot 2023",
+    "YMCA Plymouth Indoor Range",
 ]
 
 const NUM_IMAGES = imageArray.length;
