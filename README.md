@@ -1,5 +1,7 @@
 # Yelverton Bowmen Score Display
 
+[![wakatime](https://wakatime.com/badge/user/55c30436-1509-4eb9-9f18-fa9b7c6060c4/project/018e8aec-7a15-4f4a-b460-ea0204844fb0.svg)](https://wakatime.com/badge/user/55c30436-1509-4eb9-9f18-fa9b7c6060c4/project/018e8aec-7a15-4f4a-b460-ea0204844fb0)
+
 The "Give It a Go" Event Score Display System is designed to showcase scores achieved by customers at "give it a go" events and community fêtes. By displaying scores publicly, the system aims to create a sense of competition among participants, encouraging them to keep coming back and engaging with the event.
 
 ## Download
@@ -30,6 +32,15 @@ To get started, clone or download the files from the GitHub repository. Open the
 - [jQuery](https://jquery.com/)
 
 As this web application is likely to be used offline, these can't be downloading via http. As such, I have included the files in the `lib` directory. This means the application can be used without internet access.
+
+![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+
+![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=for-the-badge&logo=bootstrap&logoColor=white)
+![jQuery](https://img.shields.io/badge/jquery-%230769AD.svg?style=for-the-badge&logo=jquery&logoColor=white)
+
+![HTML5](https://img.shields.io/badge/html5-%23E34F26.svg?style=for-the-badge&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
 
 ## License
 
