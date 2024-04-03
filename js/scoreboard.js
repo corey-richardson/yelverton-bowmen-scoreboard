@@ -12,12 +12,13 @@ $(document).ready(function ()
     {
         setTimeout(function() {
             $("#" + flashId).addClass("flash");
-        }, 300);
+        }, 400);
+
         setTimeout(function() {
             $("#" + flashId).removeClass("flash");
-        }, 1000);
-
-        sessionStorage.removeItem("flashId");
+        }, 1600);
+        
+        // sessionStorage.removeItem("flashId");
     }
 
     var request = window.indexedDB.open('archery_scores', 1);

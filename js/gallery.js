@@ -23,12 +23,13 @@ $(document).ready(function ()
 {
     function showImage (imageSlideNumber)
     {
-        $("#gallery-image").fadeTo(500, 0.1, function() {
-            $(this).attr("src", imageArray[imageSlideNumber])
-                   .fadeTo(500, 1);
-        });
-
+        $("#gallery-image").attr("src", imageArray[imageSlideNumber]);
         $("#caption").html(imageCaptions[imageSlideNumber]);
+
+        // $("#gallery-image").fadeTo(500, 0.1, function() {
+        //     $(this).attr("src", imageArray[imageSlideNumber])
+        //            .fadeTo(500, 1);
+        // });
     }
 
     function prevImg()
