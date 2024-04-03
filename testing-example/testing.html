@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Archery Club Scoreboard</title>
+  <style>
+    /* Add your CSS styles here */
+  </style>
+</head>
+<body>
+  <h1>Archery Club Scoreboard</h1>
+  
+  <!-- Form for submitting scores -->
+  <form id="scoreForm">
+    <label for="playerName">Player Name:</label>
+    <input type="text" id="playerName" required>
+    <label for="score">Score:</label>
+    <input type="number" id="score" required>
+    <button type="submit">Submit</button>
+  </form>
+
+  <!-- Display scoreboard -->
+  <h2>Scoreboard</h2>
+  <ul id="scoreboard"></ul>
+
+  <script>
+    // Open IndexedDB database
+    var request = window.indexedDB.open('archery_scores', 1);
+    var db;
+
+    request.onerror = function(event) {
+      console.error("IndexedDB error:", event.target.errorCode);
+    };
+
+    request.onupgradeneeded = function(event) {
+      db = event.target.result;
+      var objectStore = db.createObjectStore("scores", { keyPath: "id", autoIncrement: true });
+      objectStore.createIndex("playerName", "playerName", { unique: false });
+      objectStore.createIndex("score", "score", { unique: false });
+    };
+
+    request.onsuccess = function(event) {
+      db = event.target.result;
+      console.log("IndexedDB opened successfully");
+
+      // Display existing scores on page load
+      displayScores();
+    };
+
+    // Function to add a new score
+    function addScore(playerName, score) {
+      var transaction = db.transaction(["scores"], "readwrite");
+      var objectStore = transaction.objectStore("scores");
+      var request = objectStore.add({ playerName: playerName, score: score });
+
+      request.onsuccess = function(event) {
+        console.log("Score added successfully");
+        displayScores(); // Update scoreboard
+      };
+
+      request.onerror = function(event) {
+        console.error("Error adding score:", event.target.error);
+      };
+    }
+
+    // Function to display scores
+    function displayScores() {
+      var scoreboard = document.getElementById('scoreboard');
+      scoreboard.innerHTML = ''; // Clear existing scores
+
+      var objectStore = db.transaction("scores").objectStore("scores");
+
+      objectStore.openCursor().onsuccess = function(event) {
+        var cursor = event.target.result;
+        if (cursor) {
+          var listItem = document.createElement('li');
+          listItem.textContent = cursor.value.playerName + ': ' + cursor.value.score;
+          scoreboard.appendChild(listItem);
+          cursor.continue();
+        }
+      };
+    }
+
+    // Submit score form
+    document.getElementById('scoreForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      var playerName = document.getElementById('playerName').value;
+      var score = parseInt(document.getElementById('score').value);
+      addScore(playerName, score);
+      document.getElementById('playerName').value = '';
+      document.getElementById('score').value = '';
+    });
+  </script>
+</body>
+</html>
