@@ -7,6 +7,10 @@ function titleCase(str) {
 
 $(document).ready(function () 
 {
+    // Check the local browser storage for a "flashId"
+    // This ID is represents the most recent entry to the scoreboard.
+    // It is set when the add score form is submitted.
+    // The CSS style class "flash" is applied, and later removed.
     const flashId = sessionStorage.getItem("flashId");
     if (flashId)
     {
@@ -30,6 +34,8 @@ $(document).ready(function ()
       console.error("IndexedDB error:", event.target.errorCode);
     };
 
+    // The `upgradeneeded` event is fired when an attempt was made to open a 
+    // database with a version number higher than its current version.
     request.onupgradeneeded = function(event) 
     {
       db = event.target.result;
@@ -39,16 +45,18 @@ $(document).ready(function ()
       objectStore.createIndex("ageCat", "ageCat", { unique: false });
     };
 
+    // The `success` event is fired when an `IDBRequest` succeeds.
     request.onsuccess = function(event) 
     {
         db = event.target.result;
         console.log("IndexedDB opened successfully");
 
+        let i = 1; // for enumeration; represents the score ranking
+
         var objectStore = db.transaction("scores").objectStore("scores");
-        var index = objectStore.index("score");
+        var index = objectStore.index("score"); // Index array by 'score' column
 
-        let i = 1;
-
+        //                      desc
         index.openCursor(null, "prev").onsuccess = function(event) 
         {
             var cursor = event.target.result;
@@ -73,6 +81,7 @@ $(document).ready(function ()
         };
     };
 
+    // Returns a promise the resolves with the primary key ID of the added score 
     function addScore(name, score, ageCat)
     {
         var transaction = db.transaction(["scores"], "readwrite");
@@ -95,16 +104,23 @@ $(document).ready(function ()
         });
     }
 
+    // Event listener for "add-score-form"
     $("#add-score-form").on("submit", function (event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent the form from being submitted in the default way
         let formData = new FormData(this);
         
+        // Call the addScore function on the submitted form data
+        // The score must be passed as an integer for proper sorting
         addScore(
             formData.get("name"),
             parseInt(formData.get("score")),
             formData.get("ageCat"),
         ).then(newId => {
-            console.log(newId);
+            // Save the flashId into session storage. This is the ID of the newly added score.
+            // We do this because when we redirect to the index page, all JavaScript variables are reset,
+            // and all scripts start from scratch. By saving the flashId to session storage, we can
+            // access it after the page load to highlight the newly added score or perform some other action.
+            // Redirect to the index page
             sessionStorage.setItem("flashId", newId);
             window.location.href = "./index.html";
         }).catch(error => {
