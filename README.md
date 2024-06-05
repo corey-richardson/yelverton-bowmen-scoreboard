@@ -9,7 +9,7 @@ The "Give It a Go" Event Score Display System is designed to showcase scores ach
 - [Bootstrap](https://getbootstrap.com/)
 - [jQuery](https://jquery.com/)
 
-As this web application is likely to be used offline, these can't be downloading via http. As such, I have included the files in the `lib` directory. This means the application can be used without internet access.
+As this web application is likely to be used offline, these can't be downloaded via http. As such, I have directly included the files in the `lib` directory. This means the application can be used without internet access.
 
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
