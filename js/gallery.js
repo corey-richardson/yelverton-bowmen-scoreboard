@@ -11,6 +11,7 @@ let images = [
     {src: "res/gallery/IMG_08.jpg", caption: "Redruth Archers WRS Spring Tournament Weekend"},
     {src: "res/gallery/IMG_09.jpg", caption: "Brixham Archers UKRS Open Rose Tournament"},
     {src: "res/gallery/IMG_10.jpg", caption: "Club Target Day: Long Metrics and WA 900"},
+    {src: "res/gallery/IMG_11.jpeg", caption: "Beginners Course Comments"},
 ];
 
 const NUM_IMAGES = images.length; 
@@ -56,27 +57,33 @@ $(document).ready(function ()
     let imageSlideInterval;
 
     // Function to start or restart the interval
-    function startImageSlideInterval() {
-        if (imageSlideInterval) {
+    function startImageSlideInterval() 
+    {
+        if (imageSlideInterval)     
+        {
             clearInterval(imageSlideInterval);
         }
-        imageSlideInterval = setInterval(() => nextImg(), 8000);
+        imageSlideInterval = setInterval(() => nextImg(), 8_000); // CHANGE INTERVAL HERE, ms
     }
 
     // Event listeners for previous and next image buttons
-    $(".prev").on("click", function () {
+    $(".prev").on("click", function () 
+    {
         prevImg();
         startImageSlideInterval(); // Reset the interval
     });
-    $(".next").on("click", function () {
+    $(".next").on("click", function () 
+    {
         nextImg();
         startImageSlideInterval(); // Reset the interval
     });
 
     // Event listener for entire window, watches for left/right arrow key down
-    document.addEventListener("keydown", function(event) {
+    document.addEventListener("keydown", function(event) 
+    {
         console.log(event);
-        switch (event.key) {
+        switch (event.key) 
+        {
             case "ArrowLeft":
                 prevImg();
                 startImageSlideInterval(); // Reset the interval
