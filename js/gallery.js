@@ -1,13 +1,16 @@
 // The image file path and the caption displayed are stored as key:value pairs in this dictionary 
 let images = [
-    {src: "res/gallery/IMG_0.jpg", caption: "Devon and Cornwall Indoor Championships 2024"},
-    {src: "res/gallery/IMG_1.jpg", caption: "Halloween Shoot 2023"},
-    {src: "res/gallery/IMG_2.jpg", caption: "Christmas Shoot 2023"},
-    {src: "res/gallery/IMG_3.jpg", caption: "Warming up before the Autumn Gold Competition"},
-    {src: "res/gallery/IMG_4.jpg", caption: "Autumn Gold 2023"},
-    {src: "res/gallery/IMG_5.jpg", caption: "Frostbite - December 2023"},
-    {src: "res/gallery/IMG_6.jpg", caption: "St. George's Day Shoot 2023"},
-    {src: "res/gallery/IMG_7.jpg", caption: "YMCA Plymouth Indoor Range"},
+    {src: "res/gallery/IMG_00.jpg", caption: "Devon and Cornwall Indoor Championships 2024"},
+    {src: "res/gallery/IMG_01.jpg", caption: "Halloween Shoot 2023"},
+    {src: "res/gallery/IMG_02.jpg", caption: "Christmas Shoot 2023"},
+    {src: "res/gallery/IMG_03.jpg", caption: "YMCA Plymouth Indoor Range"},
+    {src: "res/gallery/IMG_04.jpg", caption: "Warming up before the Autumn Gold Competition"},
+    {src: "res/gallery/IMG_05.jpg", caption: "Autumn Gold 2023"},
+    {src: "res/gallery/IMG_06.jpg", caption: "Frostbite December 2023"},
+    {src: "res/gallery/IMG_07.jpg", caption: "St. George's Day Shoot 2023"},
+    {src: "res/gallery/IMG_08.jpg", caption: "Redruth Archers WRS Spring Tournament Weekend"},
+    {src: "res/gallery/IMG_09.jpg", caption: "Brixham Archers UKRS Open Rose Tournament"},
+    {src: "res/gallery/IMG_10.jpg", caption: "Club Target Day: Long Metrics and WA 900"},
 ];
 
 const NUM_IMAGES = images.length; 
@@ -49,28 +52,42 @@ $(document).ready(function ()
         showImage(imageSlideNumber);
     }
 
+    // Variables to keep track of the interval
+    let imageSlideInterval;
+
+    // Function to start or restart the interval
+    function startImageSlideInterval() {
+        if (imageSlideInterval) {
+            clearInterval(imageSlideInterval);
+        }
+        imageSlideInterval = setInterval(() => nextImg(), 8000);
+    }
+
     // Event listeners for previous and next image buttons
     $(".prev").on("click", function () {
         prevImg();
+        startImageSlideInterval(); // Reset the interval
     });
     $(".next").on("click", function () {
         nextImg();
+        startImageSlideInterval(); // Reset the interval
     });
 
     // Event listener for entire window, watches for left/right arrow key down
     document.addEventListener("keydown", function(event) {
         console.log(event);
-        switch (event.key)
-        {
-            case ("ArrowLeft"):
+        switch (event.key) {
+            case "ArrowLeft":
                 prevImg();
+                startImageSlideInterval(); // Reset the interval
                 break;
-            case ("ArrowRight"):
+            case "ArrowRight":
                 nextImg();
+                startImageSlideInterval(); // Reset the interval
                 break;
         }
-    })
+    });
 
-    showImage(imageSlideNumber); // on page load
-    setInterval(() => nextImg(), 8_000); // every 8 seconds, goto next image
+    showImage(imageSlideNumber); // On page load
+    startImageSlideInterval(); // Start the interval initially
 });
