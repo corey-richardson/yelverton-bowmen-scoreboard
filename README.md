@@ -52,6 +52,8 @@ To get started, clone or download the files from the GitHub repository. Open the
 
 1. Clone or download the repository from GitHub
     - Download as a ZIP file to your local machine and extract.
+    - ![](/res/readme/github-download.png)
+    - Press **GREEN** *Code* button. Press *Download Zip*.
 2. Open `index.html` - this is the main page of the web application.
 
 ## Usage
