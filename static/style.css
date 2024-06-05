@@ -118,3 +118,11 @@ b {
     color: var(--yb_blue);
     display: inline-block;
 }
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
